@@ -5,47 +5,126 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
-  ScrollView,
+  Alert,
   KeyboardAvoidingView,
   Platform,
-  Dimensions,
+  ScrollView,
+  Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const { width } = Dimensions.get('window');
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  signinWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  signin: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  titulo: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+  },
+  imgContainer: {
+    marginBottom: 30,
+  },
+  imalogin: {
+    width: 120,
+    height: 120,
+  },
+  formContainer: {
+    width: '100%',
+  },
+  formTitulo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 15,
+    color: 'white',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  signiboton: {
+    backgroundColor: '#FFD700',
+    borderRadius: 8,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  botonText: {
+    color: '#0052cc',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  pregunta: {
+    marginTop: 15,
+    alignItems: 'center',
+  },
+  link: {
+    color: 'white',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+});
 
-interface SigninProps {
-  navigation?: any;
-  onNavigateToRegister?: () => void;
-  onNavigateToPrincipal?: () => void;
-}
-
-const Signin: React.FC<SigninProps> = ({ 
-  navigation, 
-  onNavigateToRegister,
-  onNavigateToPrincipal 
-}) => {
+const Signin = ({ navigation }: any) => {
   const [Correo, setCorreo] = useState('');
   const [Contra, setContra] = useState('');
 
-  const handleLogin = () => {
-    if (navigation) {
-      navigation.navigate('Principal');
-    } else if (onNavigateToPrincipal) {
-      onNavigateToPrincipal();
-    }
-  };
+const handleLogin = async () => {
+  if (!Correo || !Contra) {
+    Alert.alert('Error', 'Todos los campos son obligatorios');
+    return;
+  }
 
-  const handleNavigateToRegister = () => {
-    if (navigation) {
-      navigation.navigate('Registro');
-    } else if (onNavigateToRegister) {
-      onNavigateToRegister();
-    }
-  };
+  try {
+    const res = await fetch('http://10.0.2.2:3000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ Correo, Contra }),
+    });
 
-  return (
+    const data = await res.json();
+
+    if (!res.ok) {
+      Alert.alert('Error', data);
+      return;
+    }
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Principal' }],
+    });
+
+  } catch (error) {
+    Alert.alert('Error', 'No se pudo conectar al servidor');
+  }
+};
+
+const handleNavigateToRegister = () => {
+  navigation.navigate('Registro');
+};
+
+return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
@@ -116,117 +195,10 @@ const Signin: React.FC<SigninProps> = ({
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 30,
-  },
-  signinWrapper: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  signin: {
-    padding: 30,
-    borderRadius: 25,
-    width: '100%',
-    maxWidth: 450,
-    alignItems: 'center',
-    shadowColor: '#0098ff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 25,
-    elevation: 15,
-  },
-  titulo: {
-    color: 'white',
-    fontSize: 36,
-    fontWeight: '800',
-    marginBottom: 25,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  imgContainer: {
-    marginBottom: 25,
-    borderRadius: 75,
-    overflow: 'hidden',
-    borderWidth: 4,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-  },
-  imalogin: {
-    width: 130,
-    height: 130,
-  },
-  formContainer: {
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    padding: 25,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  formTitulo: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    padding: 14,
-    marginBottom: 12,
-    borderRadius: 12,
-    color: 'white',
-    fontSize: 16,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-  },
-  signiboton: {
-    backgroundColor: 'white',
-    padding: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 8,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-  botonText: {
-    color: '#0052cc',
-    fontWeight: '700',
-    fontSize: 17,
-  },
-  pregunta: {
-    alignItems: 'center',
-    marginTop: 18,
-    paddingVertical: 8,
-  },
-  link: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
 
 export default Signin;
+

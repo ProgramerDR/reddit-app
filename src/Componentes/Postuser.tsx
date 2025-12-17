@@ -23,17 +23,14 @@ const Postuser = () => {
       <View style={styles.postsWrapper}>
         {postuser.map((post) => (
           <View key={post.id} style={styles.postCard}>
-            {/* Avatar a la izquierda */}
             <Image
               source={{ uri: post.avatar }}
               style={styles.avatar}
             />
             
-            {/* Contenido del post */}
             <View style={styles.postContent}>
               <Text style={styles.postText}>{post.text}</Text>
               
-              {/* Botón de ver respuestas */}
               <TouchableOpacity 
                 style={styles.viewRepliesBtn}
               >

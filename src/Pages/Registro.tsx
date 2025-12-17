@@ -1,19 +1,13 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import RegistroComponent from "../Componentes/Registro";
+import React from 'react';
+import { View } from 'react-native';
+import InicioSesionComponent from '../Componentes/InicioSesion';
 
-const Registro = ({ navigation }: any) => {
+const InicioSesion = ({ navigation }: any) => {
   return (
-    <View style={styles.container}>
-      <RegistroComponent navigation={navigation} />
+    <View style={{ flex: 1 }}>
+      <InicioSesionComponent navigation={navigation} />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default Registro;
+export default InicioSesion;
